@@ -1,4 +1,4 @@
-import md5 from 'md5';
+import {base64encode} from 'nodejs-base64';
 import {
     getLatestPostsFromSubreddit,
     sendToDiscordWebhook,
@@ -10,7 +10,7 @@ const {WEBHOOK_URL = ''} = process.env;
 export type Maybe<T> = T | null | undefined;
 
 function compareHashes(oldHash: Maybe<string>, newHash: string): boolean {
-    return oldHash !== newHash;
+    return oldHash === newHash;
 }
 
 /**
@@ -20,17 +20,11 @@ export async function handler(): Promise<void> {
     const data = await getLatestPostsFromSubreddit('kopieerpasta');
     const newestPost = data.data.children[0].data;
     const [newHash, oldHash] = [
-        md5(JSON.stringify(newestPost)),
+        base64encode(JSON.stringify(newestPost.selftext)) as string,
         (await getHashFromS3())?.hash,
     ];
 
-    console.log({
-        newHash,
-        oldHash,
-        compareHashes: compareHashes(oldHash, newHash),
-    });
-
-    if (compareHashes(oldHash, newHash)) {
+    if (!compareHashes(oldHash, newHash)) {
         await saveHashToS3(newHash);
         await sendToDiscordWebhook(WEBHOOK_URL, {
             avatar_url:
