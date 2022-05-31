@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Rick Klaasboer <rick@klaasboer.org>",
+  "license": "MIT",
   "devDependencies": {
     "@types/md5": "2.3.2",
     "@types/node": "17.0.36",
