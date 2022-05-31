@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.100.0",
-    "node-fetch": "2.6.4",
+    "node-fetch": "2.6.7",
     "nodejs-base64": "2.0.0"
   }
 }
