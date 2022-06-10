@@ -4,6 +4,7 @@ import {
     sendToDiscordWebhook,
 } from '@/util/networking';
 import {getHashFromS3, saveHashToS3} from '@/util/s3';
+import {createEmbed} from './util/discord';
 
 const {WEBHOOK_URL = ''} = process.env;
 
@@ -29,8 +30,9 @@ export async function handler(): Promise<void> {
         await sendToDiscordWebhook(WEBHOOK_URL, {
             avatar_url:
                 'https://external-preview.redd.it/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png?width=640&crop=smart&auto=webp&s=bfd318557bf2a5b3602367c9c4d9cd84d917ccd5',
-            content: newestPost.selftext,
+            content: null,
             username: 'r/kopieerpasta',
+            embeds: [await createEmbed(data.data.children[0])],
         });
     }
 }
