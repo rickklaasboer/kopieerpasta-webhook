@@ -84,8 +84,6 @@ export async function sendToDiscordWebhook(
     url: string,
     payload: DiscordWebhookPayload,
 ) {
-    console.log(JSON.stringify(payload));
-
     try {
         await fetch(url, {
             method: 'POST',
