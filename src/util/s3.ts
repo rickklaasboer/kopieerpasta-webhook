@@ -26,7 +26,7 @@ export async function streamToString(stream: Readable): Promise<string> {
 /**
  * Get prev hash from s3
  */
-export async function getHashFromS3(): Promise<Maybe<{hash: string}>> {
+export async function getHashFromS3(): Promise<Maybe<{hash: string[]}>> {
     try {
         const cmd = new GetObjectCommand({
             Bucket: S3_BUCKET,
@@ -36,7 +36,7 @@ export async function getHashFromS3(): Promise<Maybe<{hash: string}>> {
         const stringBody = await streamToString(Body as Readable);
 
         return JSON.parse(stringBody) as {
-            hash: string;
+            hash: string[];
         };
     } catch (err) {
         console.error('getHashFromS3', err);
@@ -47,7 +47,7 @@ export async function getHashFromS3(): Promise<Maybe<{hash: string}>> {
 /**
  * Save new hash to s3
  */
-export async function saveHashToS3(hash: string): Promise<boolean> {
+export async function saveHashToS3(hash: string[]): Promise<boolean> {
     try {
         const cmd = new PutObjectCommand({
             Bucket: S3_BUCKET,

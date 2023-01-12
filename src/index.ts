@@ -22,11 +22,14 @@ export async function handler(): Promise<void> {
     const newestPost = data.data.children[0].data;
     const [newHash, oldHash] = [
         base64encode(JSON.stringify(newestPost.selftext)) as string,
-        (await getHashFromS3())?.hash,
+        (await getHashFromS3())?.hash as string[],
     ];
 
-    if (!compareHashes(oldHash, newHash)) {
-        await saveHashToS3(newHash);
+    const queue = new Queue<string>(oldHash);
+
+    if (!queue.containsItem(newHash)) {
+        queue.push(newHash);
+        await saveHashToS3(queue.getItems());
         await sendToDiscordWebhook(WEBHOOK_URL, {
             avatar_url:
                 'https://external-preview.redd.it/iDdntscPf-nfWKqzHRGFmhVxZm4hZgaKe5oyFws-yzA.png?width=640&crop=smart&auto=webp&s=bfd318557bf2a5b3602367c9c4d9cd84d917ccd5',
